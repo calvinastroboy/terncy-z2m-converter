@@ -96,6 +96,7 @@ export default {
     model: 'TERNCY-WS07-D3',
     vendor: 'Xiaoyan',
     description: 'Smart wall switch 3-gang (L+N) - Action Debug',
+    icon: 'https://raw.githubusercontent.com/calvinastroboy/terncy-z2m-converter/main/images/terncy-ws07-d3.jpg',
     
     fromZigbee: [
         fzOnOffState,
