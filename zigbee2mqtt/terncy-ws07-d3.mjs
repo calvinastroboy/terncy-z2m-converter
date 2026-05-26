@@ -157,6 +157,7 @@ export default {
     model: "TERNCY-WS07-D3",
     vendor: "Terncy",
     description: "3-gang neutral wall switch",
+    icon: "https://raw.githubusercontent.com/calvinastroboy/terncy-z2m-converter/main/images/terncy-ws07-d3.jpg",
     extend: [
         m.deviceAddCustomCluster("manuSpecificClusterAduroSmart", {
             name: "manuSpecificClusterAduroSmart",
