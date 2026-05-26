@@ -1,0 +1,128 @@
+blueprint:
+  name: 小燕/Terncy WS07-D3 無線按鍵自動化
+  description: >
+    將小燕/Terncy WS07-D3 三路開關的狀態變化當作無線按鍵觸發。
+    使用前請先在 Zigbee2MQTT 或 Home Assistant 中，把對應路數設為無線按鍵
+    或常供電模式，再在這裡指定每一路 ON/OFF 要執行的動作。
+  domain: automation
+  author: xiaoyan-ha-migration
+  input:
+    l1_switch:
+      name: 第一路 switch entity
+      description: Zigbee2MQTT 產生的第一路開關 entity。
+      selector:
+        entity:
+          domain: switch
+    l2_switch:
+      name: 第二路 switch entity
+      description: Zigbee2MQTT 產生的第二路開關 entity。
+      selector:
+        entity:
+          domain: switch
+    l3_switch:
+      name: 第三路 switch entity
+      description: Zigbee2MQTT 產生的第三路開關 entity。
+      selector:
+        entity:
+          domain: switch
+
+    l1_on_action:
+      name: 第一路 ON 動作
+      description: 第一路從 off 變成 on 時執行。
+      default: []
+      selector:
+        action: {}
+    l1_off_action:
+      name: 第一路 OFF 動作
+      description: 第一路從 on 變成 off 時執行。
+      default: []
+      selector:
+        action: {}
+    l2_on_action:
+      name: 第二路 ON 動作
+      description: 第二路從 off 變成 on 時執行。
+      default: []
+      selector:
+        action: {}
+    l2_off_action:
+      name: 第二路 OFF 動作
+      description: 第二路從 on 變成 off 時執行。
+      default: []
+      selector:
+        action: {}
+    l3_on_action:
+      name: 第三路 ON 動作
+      description: 第三路從 off 變成 on 時執行。
+      default: []
+      selector:
+        action: {}
+    l3_off_action:
+      name: 第三路 OFF 動作
+      description: 第三路從 on 變成 off 時執行。
+      default: []
+      selector:
+        action: {}
+
+mode: queued
+max: 10
+
+trigger:
+  - platform: state
+    entity_id: !input l1_switch
+    from: "off"
+    to: "on"
+    id: l1_on
+  - platform: state
+    entity_id: !input l1_switch
+    from: "on"
+    to: "off"
+    id: l1_off
+  - platform: state
+    entity_id: !input l2_switch
+    from: "off"
+    to: "on"
+    id: l2_on
+  - platform: state
+    entity_id: !input l2_switch
+    from: "on"
+    to: "off"
+    id: l2_off
+  - platform: state
+    entity_id: !input l3_switch
+    from: "off"
+    to: "on"
+    id: l3_on
+  - platform: state
+    entity_id: !input l3_switch
+    from: "on"
+    to: "off"
+    id: l3_off
+
+condition: []
+
+action:
+  - choose:
+      - conditions:
+          - condition: trigger
+            id: l1_on
+        sequence: !input l1_on_action
+      - conditions:
+          - condition: trigger
+            id: l1_off
+        sequence: !input l1_off_action
+      - conditions:
+          - condition: trigger
+            id: l2_on
+        sequence: !input l2_on_action
+      - conditions:
+          - condition: trigger
+            id: l2_off
+        sequence: !input l2_off_action
+      - conditions:
+          - condition: trigger
+            id: l3_on
+        sequence: !input l3_on_action
+      - conditions:
+          - condition: trigger
+            id: l3_off
+        sequence: !input l3_off_action

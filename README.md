@@ -1,60 +1,112 @@
-# Terncy Zigbee2MQTT Converters
+# Terncy/Xiaoyan WS07-D3 for Zigbee2MQTT and Home Assistant
 
-Custom external converters for Terncy/Xiaoyan smart switches in Zigbee2MQTT.
+Community support files for the Terncy/Xiaoyan `TERNCY-WS07-D3` 3-gang neutral wall switch.
 
-## Supported Devices
+## Included Files
 
-### TERNCY-WS07-D3
-- **Description:** Smart wall switch 3-gang (L+N version) / 精衛三路零火開關
-- **Vendor:** Xiaoyan (小燕科技)
-- **Features:**
-  - 3 independent switches (L1, L2, L3)
-  - Button actions (single, double, triple click + on/off/toggle)
-  - Decoupled mode support (button and relay separated)
-  - Private cluster monitoring for debugging
+```text
+zigbee2mqtt/terncy-ws07-d3.mjs
+  Zigbee2MQTT external converter.
 
-## Installation
+homeassistant/blueprints/automation/terncy/ws07_d3_action_events.yaml
+  Main Home Assistant blueprint for 1-7 clicks and long press automation.
 
-1. Copy the `.mjs` file to your Zigbee2MQTT external converters directory:
-   ```
-   /config/zigbee2mqtt/terncy-ws07-d3.mjs
-   ```
+homeassistant/blueprints/automation/terncy/ws07_d3_wireless_switch.deprecated.yaml
+  Earlier state-change based blueprint. Kept for reference only.
 
-2. Add to your Z2M configuration:
-   ```yaml
-   external_converters:
-     - terncy-ws07-d3.mjs
-   ```
+homeassistant/packages/ws07_d3_helpers.yaml
+  Optional Chinese Home Assistant helper package.
 
-3. Restart Zigbee2MQTT
+docs/
+  Test notes and feature mapping.
+```
 
-## Usage
+## Supported Features
 
-After installation, the device will expose:
-- `switch.l1`, `switch.l2`, `switch.l3` - On/off control
-- `action` - Button events (button_1_single, button_2_double, etc.)
-- `raw_data`, `private_data` - Debug info for private cluster messages
+- Three relay outputs via `genOnOff`.
+- Per-gang relay-control/wireless mode.
+- Per-gang constant-power mode.
+- Per-gang wireless-mode LED state.
+- Per-gang relay-mode LED feedback mode.
+- Wireless button actions:
+  - `single_l1/l2/l3`
+  - `double_l1/l2/l3`
+  - `triple_l1/l2/l3`
+  - `quadruple_l1/l2/l3`
+  - `5_click_l1/l2/l3`
+  - `6_click_l1/l2/l3`
+  - `7_click_l1/l2/l3`
+  - `hold_l1/l2/l3`
+  - `release_l1/l2/l3`
+  - `action_duration`
 
-## Decoupled Mode
+## Install Zigbee2MQTT External Converter
 
-When the switch is in decoupled mode (configured via Terncy app/gateway):
-- Physical button presses do NOT toggle the relay
-- Button events are sent as `action` to Z2M
-- Relay can still be controlled via Z2M/Home Assistant
+Replace `<RAW_BASE_URL>` with this repository's GitHub raw URL.
 
-## Private Cluster
+Example raw base URL format:
 
-Terncy uses a private Zigbee cluster `manuSpecificClusterAduroSmart` (0xFCCC) for:
-- Decoupled mode settings
-- LED feedback configuration  
-- Button-relay associations
+```text
+https://raw.githubusercontent.com/<owner>/<repo>/main
+```
 
-**Note:** The attribute IDs for these features are not publicly documented.
+On Home Assistant OS / add-on host:
 
-## License
+```sh
+mkdir -p /config/zigbee2mqtt/external_converters
+curl -L \
+  <RAW_BASE_URL>/zigbee2mqtt/terncy-ws07-d3.mjs \
+  -o /config/zigbee2mqtt/external_converters/terncy-ws07-d3.mjs
+```
 
-MIT
+Then add this to Zigbee2MQTT `configuration.yaml`:
 
-## Credits
+```yaml
+external_converters:
+  - terncy-ws07-d3.mjs
+```
 
-Developed for 小燕科技台灣 (Xiaoyan Technology Taiwan)
+Restart Zigbee2MQTT.
+
+## Install Home Assistant Blueprint
+
+```sh
+mkdir -p /config/blueprints/automation/terncy
+curl -L \
+  <RAW_BASE_URL>/homeassistant/blueprints/automation/terncy/ws07_d3_action_events.yaml \
+  -o /config/blueprints/automation/terncy/ws07_d3_action_events.yaml
+```
+
+In Home Assistant, create an automation from:
+
+```text
+小燕/Terncy WS07-D3 多擊與長按自動化
+```
+
+Default MQTT topic:
+
+```text
+zigbee2mqtt/0x04e3e5fffea1fbb0
+```
+
+If you renamed the device in Zigbee2MQTT, change the blueprint topic to:
+
+```text
+zigbee2mqtt/<friendly_name>
+```
+
+## Usage Model
+
+Configure device behavior in Zigbee2MQTT:
+
+- `operation_mode = control_relay`: physical button controls the relay directly. Home Assistant sees the gang as a normal switch entity.
+- `operation_mode = wireless`: physical button is detached from the relay and can trigger automations.
+- `relay_constant_power = ON`: turns relay on, then detaches the button so smart bulbs or downstream loads stay powered.
+
+Use the Home Assistant blueprint for wireless actions and long press automations.
+
+## Notes
+
+The deprecated blueprint watches switch `on/off` state transitions. It was useful before real `action` decoding was implemented, but the action blueprint should be preferred.
+
+The optional helper package exposes Chinese template entities for easier manual setup inside Home Assistant. It is not required for the converter or blueprint.

@@ -1,0 +1,276 @@
+# User-friendly Home Assistant helpers for Terncy/Xiaoyan TERNCY-WS07-D3.
+# Underlying Zigbee2MQTT entities stay in English/ASCII; these template
+# entities provide Chinese labels and workflow-oriented controls in HA.
+
+template:
+  - select:
+      - name: "D3 第一路按鍵模式"
+        unique_id: ws07_d3_l1_button_mode_cn
+        icon: mdi:gesture-tap-button
+        state: >-
+          {% if is_state('select.0x04e3e5fffea1fbb0_operation_mode_l1', 'wireless') %}
+            無線按鍵
+          {% else %}
+            普通燈控
+          {% endif %}
+        options: "{{ ['普通燈控', '無線按鍵'] }}"
+        select_option:
+          - service: select.select_option
+            target:
+              entity_id: select.0x04e3e5fffea1fbb0_operation_mode_l1
+            data:
+              option: "{{ 'wireless' if option == '無線按鍵' else 'control_relay' }}"
+
+      - name: "D3 第二路按鍵模式"
+        unique_id: ws07_d3_l2_button_mode_cn
+        icon: mdi:gesture-tap-button
+        state: >-
+          {% if is_state('select.0x04e3e5fffea1fbb0_operation_mode_l2', 'wireless') %}
+            無線按鍵
+          {% else %}
+            普通燈控
+          {% endif %}
+        options: "{{ ['普通燈控', '無線按鍵'] }}"
+        select_option:
+          - service: select.select_option
+            target:
+              entity_id: select.0x04e3e5fffea1fbb0_operation_mode_l2
+            data:
+              option: "{{ 'wireless' if option == '無線按鍵' else 'control_relay' }}"
+
+      - name: "D3 第三路按鍵模式"
+        unique_id: ws07_d3_l3_button_mode_cn
+        icon: mdi:gesture-tap-button
+        state: >-
+          {% if is_state('select.0x04e3e5fffea1fbb0_operation_mode_l3', 'wireless') %}
+            無線按鍵
+          {% else %}
+            普通燈控
+          {% endif %}
+        options: "{{ ['普通燈控', '無線按鍵'] }}"
+        select_option:
+          - service: select.select_option
+            target:
+              entity_id: select.0x04e3e5fffea1fbb0_operation_mode_l3
+            data:
+              option: "{{ 'wireless' if option == '無線按鍵' else 'control_relay' }}"
+
+      - name: "D3 第一路指示燈反饋"
+        unique_id: ws07_d3_l1_led_feedback_cn
+        icon: mdi:led-on
+        state: >-
+          {% if is_state('select.0x04e3e5fffea1fbb0_led_feedback_mode_l1', 'negative') %}
+            負反饋：燈關指示燈關
+          {% else %}
+            正反饋：燈關指示燈開
+          {% endif %}
+        options: "{{ ['正反饋：燈關指示燈開', '負反饋：燈關指示燈關'] }}"
+        select_option:
+          - service: select.select_option
+            target:
+              entity_id: select.0x04e3e5fffea1fbb0_led_feedback_mode_l1
+            data:
+              option: "{{ 'negative' if option.startswith('負反饋') else 'positive' }}"
+
+      - name: "D3 第二路指示燈反饋"
+        unique_id: ws07_d3_l2_led_feedback_cn
+        icon: mdi:led-on
+        state: >-
+          {% if is_state('select.0x04e3e5fffea1fbb0_led_feedback_mode_l2', 'negative') %}
+            負反饋：燈關指示燈關
+          {% else %}
+            正反饋：燈關指示燈開
+          {% endif %}
+        options: "{{ ['正反饋：燈關指示燈開', '負反饋：燈關指示燈關'] }}"
+        select_option:
+          - service: select.select_option
+            target:
+              entity_id: select.0x04e3e5fffea1fbb0_led_feedback_mode_l2
+            data:
+              option: "{{ 'negative' if option.startswith('負反饋') else 'positive' }}"
+
+      - name: "D3 第三路指示燈反饋"
+        unique_id: ws07_d3_l3_led_feedback_cn
+        icon: mdi:led-on
+        state: >-
+          {% if is_state('select.0x04e3e5fffea1fbb0_led_feedback_mode_l3', 'negative') %}
+            負反饋：燈關指示燈關
+          {% else %}
+            正反饋：燈關指示燈開
+          {% endif %}
+        options: "{{ ['正反饋：燈關指示燈開', '負反饋：燈關指示燈關'] }}"
+        select_option:
+          - service: select.select_option
+            target:
+              entity_id: select.0x04e3e5fffea1fbb0_led_feedback_mode_l3
+            data:
+              option: "{{ 'negative' if option.startswith('負反饋') else 'positive' }}"
+
+  - switch:
+      - name: "D3 第一路燈控"
+        unique_id: ws07_d3_l1_light_control_cn
+        icon: mdi:light-switch
+        state: "{{ is_state('switch.0x04e3e5fffea1fbb0_l1', 'on') }}"
+        turn_on:
+          - service: switch.turn_on
+            target:
+              entity_id: switch.0x04e3e5fffea1fbb0_l1
+        turn_off:
+          - service: switch.turn_off
+            target:
+              entity_id: switch.0x04e3e5fffea1fbb0_l1
+
+      - name: "D3 第二路燈控"
+        unique_id: ws07_d3_l2_light_control_cn
+        icon: mdi:light-switch
+        state: "{{ is_state('switch.0x04e3e5fffea1fbb0_l2', 'on') }}"
+        turn_on:
+          - service: switch.turn_on
+            target:
+              entity_id: switch.0x04e3e5fffea1fbb0_l2
+        turn_off:
+          - service: switch.turn_off
+            target:
+              entity_id: switch.0x04e3e5fffea1fbb0_l2
+
+      - name: "D3 第三路燈控"
+        unique_id: ws07_d3_l3_light_control_cn
+        icon: mdi:light-switch
+        state: "{{ is_state('switch.0x04e3e5fffea1fbb0_l3', 'on') }}"
+        turn_on:
+          - service: switch.turn_on
+            target:
+              entity_id: switch.0x04e3e5fffea1fbb0_l3
+        turn_off:
+          - service: switch.turn_off
+            target:
+              entity_id: switch.0x04e3e5fffea1fbb0_l3
+
+      - name: "D3 第一路繼電器啟用"
+        unique_id: ws07_d3_l1_relay_enabled_cn
+        icon: mdi:electric-switch
+        state: "{{ is_state('switch.0x04e3e5fffea1fbb0_relay_enabled_l1', 'on') }}"
+        turn_on:
+          - service: switch.turn_on
+            target:
+              entity_id: switch.0x04e3e5fffea1fbb0_relay_enabled_l1
+        turn_off:
+          - service: switch.turn_off
+            target:
+              entity_id: switch.0x04e3e5fffea1fbb0_relay_enabled_l1
+
+      - name: "D3 第二路繼電器啟用"
+        unique_id: ws07_d3_l2_relay_enabled_cn
+        icon: mdi:electric-switch
+        state: "{{ is_state('switch.0x04e3e5fffea1fbb0_relay_enabled_l2', 'on') }}"
+        turn_on:
+          - service: switch.turn_on
+            target:
+              entity_id: switch.0x04e3e5fffea1fbb0_relay_enabled_l2
+        turn_off:
+          - service: switch.turn_off
+            target:
+              entity_id: switch.0x04e3e5fffea1fbb0_relay_enabled_l2
+
+      - name: "D3 第三路繼電器啟用"
+        unique_id: ws07_d3_l3_relay_enabled_cn
+        icon: mdi:electric-switch
+        state: "{{ is_state('switch.0x04e3e5fffea1fbb0_relay_enabled_l3', 'on') }}"
+        turn_on:
+          - service: switch.turn_on
+            target:
+              entity_id: switch.0x04e3e5fffea1fbb0_relay_enabled_l3
+        turn_off:
+          - service: switch.turn_off
+            target:
+              entity_id: switch.0x04e3e5fffea1fbb0_relay_enabled_l3
+
+      - name: "D3 第一路常供電"
+        unique_id: ws07_d3_l1_constant_power_cn
+        icon: mdi:power-plug
+        state: "{{ is_state('switch.0x04e3e5fffea1fbb0_relay_constant_power_l1', 'on') }}"
+        turn_on:
+          - service: switch.turn_on
+            target:
+              entity_id: switch.0x04e3e5fffea1fbb0_relay_constant_power_l1
+        turn_off:
+          - service: switch.turn_off
+            target:
+              entity_id: switch.0x04e3e5fffea1fbb0_relay_constant_power_l1
+
+      - name: "D3 第二路常供電"
+        unique_id: ws07_d3_l2_constant_power_cn
+        icon: mdi:power-plug
+        state: "{{ is_state('switch.0x04e3e5fffea1fbb0_relay_constant_power_l2', 'on') }}"
+        turn_on:
+          - service: switch.turn_on
+            target:
+              entity_id: switch.0x04e3e5fffea1fbb0_relay_constant_power_l2
+        turn_off:
+          - service: switch.turn_off
+            target:
+              entity_id: switch.0x04e3e5fffea1fbb0_relay_constant_power_l2
+
+      - name: "D3 第三路常供電"
+        unique_id: ws07_d3_l3_constant_power_cn
+        icon: mdi:power-plug
+        state: "{{ is_state('switch.0x04e3e5fffea1fbb0_relay_constant_power_l3', 'on') }}"
+        turn_on:
+          - service: switch.turn_on
+            target:
+              entity_id: switch.0x04e3e5fffea1fbb0_relay_constant_power_l3
+        turn_off:
+          - service: switch.turn_off
+            target:
+              entity_id: switch.0x04e3e5fffea1fbb0_relay_constant_power_l3
+
+      - name: "D3 第一路無線 LED"
+        unique_id: ws07_d3_l1_wireless_led_cn
+        icon: mdi:led-outline
+        state: "{{ is_state('select.0x04e3e5fffea1fbb0_wireless_led_status_l1', 'on') }}"
+        turn_on:
+          - service: select.select_option
+            target:
+              entity_id: select.0x04e3e5fffea1fbb0_wireless_led_status_l1
+            data:
+              option: "on"
+        turn_off:
+          - service: select.select_option
+            target:
+              entity_id: select.0x04e3e5fffea1fbb0_wireless_led_status_l1
+            data:
+              option: "off"
+
+      - name: "D3 第二路無線 LED"
+        unique_id: ws07_d3_l2_wireless_led_cn
+        icon: mdi:led-outline
+        state: "{{ is_state('select.0x04e3e5fffea1fbb0_wireless_led_status_l2', 'on') }}"
+        turn_on:
+          - service: select.select_option
+            target:
+              entity_id: select.0x04e3e5fffea1fbb0_wireless_led_status_l2
+            data:
+              option: "on"
+        turn_off:
+          - service: select.select_option
+            target:
+              entity_id: select.0x04e3e5fffea1fbb0_wireless_led_status_l2
+            data:
+              option: "off"
+
+      - name: "D3 第三路無線 LED"
+        unique_id: ws07_d3_l3_wireless_led_cn
+        icon: mdi:led-outline
+        state: "{{ is_state('select.0x04e3e5fffea1fbb0_wireless_led_status_l3', 'on') }}"
+        turn_on:
+          - service: select.select_option
+            target:
+              entity_id: select.0x04e3e5fffea1fbb0_wireless_led_status_l3
+            data:
+              option: "on"
+        turn_off:
+          - service: select.select_option
+            target:
+              entity_id: select.0x04e3e5fffea1fbb0_wireless_led_status_l3
+            data:
+              option: "off"

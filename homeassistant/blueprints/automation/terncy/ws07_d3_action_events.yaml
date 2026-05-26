@@ -1,0 +1,347 @@
+blueprint:
+  name: 小燕/Terncy WS07-D3 多擊與長按自動化
+  description: >
+    使用 Zigbee2MQTT action 事件觸發 WS07-D3 三路按鍵自動化。
+    支援每一路 1 到 7 次連按，以及依放開時 action_duration 判斷的長按。
+  domain: automation
+  author: xiaoyan-ha-migration
+  input:
+    mqtt_topic:
+      name: Zigbee2MQTT 設備 topic
+      description: 通常是 zigbee2mqtt/設備名稱。若未改 friendly_name，保留預設即可。
+      default: zigbee2mqtt/0x04e3e5fffea1fbb0
+      selector:
+        text:
+
+    l1_single_action:
+      name: 第一路按 1 次
+      default: []
+      selector: {action: {}}
+    l1_double_action:
+      name: 第一路按 2 次
+      default: []
+      selector: {action: {}}
+    l1_triple_action:
+      name: 第一路按 3 次
+      default: []
+      selector: {action: {}}
+    l1_quadruple_action:
+      name: 第一路按 4 次
+      default: []
+      selector: {action: {}}
+    l1_5_click_action:
+      name: 第一路按 5 次
+      default: []
+      selector: {action: {}}
+    l1_6_click_action:
+      name: 第一路按 6 次
+      default: []
+      selector: {action: {}}
+    l1_7_click_action:
+      name: 第一路按 7 次
+      default: []
+      selector: {action: {}}
+    l1_long_min_seconds:
+      name: 第一路長按秒數門檻
+      default: 2
+      selector:
+        number:
+          min: 1
+          max: 30
+          step: 1
+          unit_of_measurement: s
+          mode: slider
+    l1_long_action:
+      name: 第一路長按放開
+      description: 放開時 action_duration 大於或等於門檻才執行。
+      default: []
+      selector: {action: {}}
+
+    l2_single_action:
+      name: 第二路按 1 次
+      default: []
+      selector: {action: {}}
+    l2_double_action:
+      name: 第二路按 2 次
+      default: []
+      selector: {action: {}}
+    l2_triple_action:
+      name: 第二路按 3 次
+      default: []
+      selector: {action: {}}
+    l2_quadruple_action:
+      name: 第二路按 4 次
+      default: []
+      selector: {action: {}}
+    l2_5_click_action:
+      name: 第二路按 5 次
+      default: []
+      selector: {action: {}}
+    l2_6_click_action:
+      name: 第二路按 6 次
+      default: []
+      selector: {action: {}}
+    l2_7_click_action:
+      name: 第二路按 7 次
+      default: []
+      selector: {action: {}}
+    l2_long_min_seconds:
+      name: 第二路長按秒數門檻
+      default: 2
+      selector:
+        number:
+          min: 1
+          max: 30
+          step: 1
+          unit_of_measurement: s
+          mode: slider
+    l2_long_action:
+      name: 第二路長按放開
+      description: 放開時 action_duration 大於或等於門檻才執行。
+      default: []
+      selector: {action: {}}
+
+    l3_single_action:
+      name: 第三路按 1 次
+      default: []
+      selector: {action: {}}
+    l3_double_action:
+      name: 第三路按 2 次
+      default: []
+      selector: {action: {}}
+    l3_triple_action:
+      name: 第三路按 3 次
+      default: []
+      selector: {action: {}}
+    l3_quadruple_action:
+      name: 第三路按 4 次
+      default: []
+      selector: {action: {}}
+    l3_5_click_action:
+      name: 第三路按 5 次
+      default: []
+      selector: {action: {}}
+    l3_6_click_action:
+      name: 第三路按 6 次
+      default: []
+      selector: {action: {}}
+    l3_7_click_action:
+      name: 第三路按 7 次
+      default: []
+      selector: {action: {}}
+    l3_long_min_seconds:
+      name: 第三路長按秒數門檻
+      default: 2
+      selector:
+        number:
+          min: 1
+          max: 30
+          step: 1
+          unit_of_measurement: s
+          mode: slider
+    l3_long_action:
+      name: 第三路長按放開
+      description: 放開時 action_duration 大於或等於門檻才執行。
+      default: []
+      selector: {action: {}}
+
+mode: queued
+max: 20
+
+variables:
+  l1_long_min: !input l1_long_min_seconds
+  l2_long_min: !input l2_long_min_seconds
+  l3_long_min: !input l3_long_min_seconds
+
+trigger:
+  - platform: mqtt
+    topic: !input mqtt_topic
+    value_template: "{{ value_json.action }}"
+    payload: single_l1
+    id: single_l1
+  - platform: mqtt
+    topic: !input mqtt_topic
+    value_template: "{{ value_json.action }}"
+    payload: double_l1
+    id: double_l1
+  - platform: mqtt
+    topic: !input mqtt_topic
+    value_template: "{{ value_json.action }}"
+    payload: triple_l1
+    id: triple_l1
+  - platform: mqtt
+    topic: !input mqtt_topic
+    value_template: "{{ value_json.action }}"
+    payload: quadruple_l1
+    id: quadruple_l1
+  - platform: mqtt
+    topic: !input mqtt_topic
+    value_template: "{{ value_json.action }}"
+    payload: 5_click_l1
+    id: 5_click_l1
+  - platform: mqtt
+    topic: !input mqtt_topic
+    value_template: "{{ value_json.action }}"
+    payload: 6_click_l1
+    id: 6_click_l1
+  - platform: mqtt
+    topic: !input mqtt_topic
+    value_template: "{{ value_json.action }}"
+    payload: 7_click_l1
+    id: 7_click_l1
+  - platform: mqtt
+    topic: !input mqtt_topic
+    value_template: "{{ value_json.action }}"
+    payload: release_l1
+    id: release_l1
+
+  - platform: mqtt
+    topic: !input mqtt_topic
+    value_template: "{{ value_json.action }}"
+    payload: single_l2
+    id: single_l2
+  - platform: mqtt
+    topic: !input mqtt_topic
+    value_template: "{{ value_json.action }}"
+    payload: double_l2
+    id: double_l2
+  - platform: mqtt
+    topic: !input mqtt_topic
+    value_template: "{{ value_json.action }}"
+    payload: triple_l2
+    id: triple_l2
+  - platform: mqtt
+    topic: !input mqtt_topic
+    value_template: "{{ value_json.action }}"
+    payload: quadruple_l2
+    id: quadruple_l2
+  - platform: mqtt
+    topic: !input mqtt_topic
+    value_template: "{{ value_json.action }}"
+    payload: 5_click_l2
+    id: 5_click_l2
+  - platform: mqtt
+    topic: !input mqtt_topic
+    value_template: "{{ value_json.action }}"
+    payload: 6_click_l2
+    id: 6_click_l2
+  - platform: mqtt
+    topic: !input mqtt_topic
+    value_template: "{{ value_json.action }}"
+    payload: 7_click_l2
+    id: 7_click_l2
+  - platform: mqtt
+    topic: !input mqtt_topic
+    value_template: "{{ value_json.action }}"
+    payload: release_l2
+    id: release_l2
+
+  - platform: mqtt
+    topic: !input mqtt_topic
+    value_template: "{{ value_json.action }}"
+    payload: single_l3
+    id: single_l3
+  - platform: mqtt
+    topic: !input mqtt_topic
+    value_template: "{{ value_json.action }}"
+    payload: double_l3
+    id: double_l3
+  - platform: mqtt
+    topic: !input mqtt_topic
+    value_template: "{{ value_json.action }}"
+    payload: triple_l3
+    id: triple_l3
+  - platform: mqtt
+    topic: !input mqtt_topic
+    value_template: "{{ value_json.action }}"
+    payload: quadruple_l3
+    id: quadruple_l3
+  - platform: mqtt
+    topic: !input mqtt_topic
+    value_template: "{{ value_json.action }}"
+    payload: 5_click_l3
+    id: 5_click_l3
+  - platform: mqtt
+    topic: !input mqtt_topic
+    value_template: "{{ value_json.action }}"
+    payload: 6_click_l3
+    id: 6_click_l3
+  - platform: mqtt
+    topic: !input mqtt_topic
+    value_template: "{{ value_json.action }}"
+    payload: 7_click_l3
+    id: 7_click_l3
+  - platform: mqtt
+    topic: !input mqtt_topic
+    value_template: "{{ value_json.action }}"
+    payload: release_l3
+    id: release_l3
+
+condition: []
+
+action:
+  - variables:
+      duration: "{{ trigger.payload_json.action_duration | default(0) | int(0) }}"
+  - choose:
+      - conditions: [{condition: trigger, id: single_l1}]
+        sequence: !input l1_single_action
+      - conditions: [{condition: trigger, id: double_l1}]
+        sequence: !input l1_double_action
+      - conditions: [{condition: trigger, id: triple_l1}]
+        sequence: !input l1_triple_action
+      - conditions: [{condition: trigger, id: quadruple_l1}]
+        sequence: !input l1_quadruple_action
+      - conditions: [{condition: trigger, id: 5_click_l1}]
+        sequence: !input l1_5_click_action
+      - conditions: [{condition: trigger, id: 6_click_l1}]
+        sequence: !input l1_6_click_action
+      - conditions: [{condition: trigger, id: 7_click_l1}]
+        sequence: !input l1_7_click_action
+      - conditions:
+          - condition: trigger
+            id: release_l1
+          - condition: template
+            value_template: "{{ duration >= l1_long_min }}"
+        sequence: !input l1_long_action
+
+      - conditions: [{condition: trigger, id: single_l2}]
+        sequence: !input l2_single_action
+      - conditions: [{condition: trigger, id: double_l2}]
+        sequence: !input l2_double_action
+      - conditions: [{condition: trigger, id: triple_l2}]
+        sequence: !input l2_triple_action
+      - conditions: [{condition: trigger, id: quadruple_l2}]
+        sequence: !input l2_quadruple_action
+      - conditions: [{condition: trigger, id: 5_click_l2}]
+        sequence: !input l2_5_click_action
+      - conditions: [{condition: trigger, id: 6_click_l2}]
+        sequence: !input l2_6_click_action
+      - conditions: [{condition: trigger, id: 7_click_l2}]
+        sequence: !input l2_7_click_action
+      - conditions:
+          - condition: trigger
+            id: release_l2
+          - condition: template
+            value_template: "{{ duration >= l2_long_min }}"
+        sequence: !input l2_long_action
+
+      - conditions: [{condition: trigger, id: single_l3}]
+        sequence: !input l3_single_action
+      - conditions: [{condition: trigger, id: double_l3}]
+        sequence: !input l3_double_action
+      - conditions: [{condition: trigger, id: triple_l3}]
+        sequence: !input l3_triple_action
+      - conditions: [{condition: trigger, id: quadruple_l3}]
+        sequence: !input l3_quadruple_action
+      - conditions: [{condition: trigger, id: 5_click_l3}]
+        sequence: !input l3_5_click_action
+      - conditions: [{condition: trigger, id: 6_click_l3}]
+        sequence: !input l3_6_click_action
+      - conditions: [{condition: trigger, id: 7_click_l3}]
+        sequence: !input l3_7_click_action
+      - conditions:
+          - condition: trigger
+            id: release_l3
+          - condition: template
+            value_template: "{{ duration >= l3_long_min }}"
+        sequence: !input l3_long_action
