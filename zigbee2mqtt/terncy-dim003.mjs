@@ -217,6 +217,7 @@ export default {
     model: "DIM003",
     vendor: "Terncy",
     description: "Color temperature dimmer",
+    icon: "https://raw.githubusercontent.com/calvinastroboy/terncy-z2m-converter/main/images/terncy-dim003.png",
     extend: [
         m.deviceAddCustomCluster("terncyDimmerPower", {
             name: "terncyDimmerPower",
