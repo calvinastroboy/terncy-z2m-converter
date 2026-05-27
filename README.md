@@ -8,6 +8,9 @@ Community support files for the Terncy/Xiaoyan `TERNCY-WS07-D3` 3-gang neutral w
 zigbee2mqtt/terncy-ws07-d3.mjs
   Zigbee2MQTT external converter.
 
+zigbee2mqtt/terncy-dim003.mjs
+  Zigbee2MQTT external converter for the DIM003 color temperature dimmer.
+
 homeassistant/blueprints/automation/terncy/ws07_d3_action_events.yaml
   Main Home Assistant blueprint for 1-7 clicks and long press automation.
 
@@ -22,6 +25,8 @@ docs/
 ```
 
 ## Supported Features
+
+### TERNCY-WS07-D3
 
 - Three relay outputs via `genOnOff`.
 - Per-gang relay-control/wireless mode.
@@ -40,6 +45,43 @@ docs/
   - `release_l1/l2/l3`
   - `action_duration`
 
+### DIM003
+
+- On/off light control.
+- Brightness control.
+- Color temperature control, `142-625` mired. DIM003 is treated as a
+  cool/warm color-temperature-only light; RGB controls are intentionally not
+  exposed.
+- Xiaoyan private light-effect settings:
+  - `rated_max_current_ma`
+  - `startup_depth_calibration`
+  - `color_temperature_range_min_kelvin`
+  - `color_temperature_range_max_kelvin`
+  - `color_temperature_io_reversed`
+  - `light_up_curve`
+
+The DIM003 rated maximum current setting has been validated with a same-value
+write at `120 mA`. The setting may apply after a short delay, so avoid treating
+it like an immediate dimming slider.
+
+The DIM003 cool/warm output IO remap is exposed as
+`color_temperature_io_reversed`. It maps to Xiaoyan private cluster `0xfccd`,
+attribute `0x0005` (`XY_REVERT_COLOR_TEMP_GPIO`).
+
+For the App's brightness transition setting, use the Zigbee2MQTT per-device
+option `transition`. A `transition: 5` live test confirmed plain brightness
+commands fade over about 5 seconds; set `transition: 2` to match the App
+screenshot value. Standard `level_config.on_transition_time` and
+`off_transition_time` are intentionally not exposed because they do not affect
+direct brightness number changes in Home Assistant/Zigbee2MQTT.
+
+The App's light-up curve setting maps to Xiaoyan private cluster `0xfccd`,
+attribute `0x0007` (`XY_LIGHT_UP_CURVE`). Verified values are
+`fast_start -> 0`, `uniform -> 1`, and `slow_start -> 2`.
+
+For a user-facing DIM003 App-to-Zigbee2MQTT setting map, see
+[`docs/dim003-zigbee2mqtt-settings-guide.md`](docs/dim003-zigbee2mqtt-settings-guide.md).
+
 ## Install Zigbee2MQTT External Converter
 
 Replace `<RAW_BASE_URL>` with this repository's GitHub raw URL.
@@ -57,6 +99,9 @@ mkdir -p /config/zigbee2mqtt/external_converters
 curl -L \
   <RAW_BASE_URL>/zigbee2mqtt/terncy-ws07-d3.mjs \
   -o /config/zigbee2mqtt/external_converters/terncy-ws07-d3.mjs
+curl -L \
+  <RAW_BASE_URL>/zigbee2mqtt/terncy-dim003.mjs \
+  -o /config/zigbee2mqtt/external_converters/terncy-dim003.mjs
 ```
 
 Then add this to Zigbee2MQTT `configuration.yaml`:
@@ -64,6 +109,7 @@ Then add this to Zigbee2MQTT `configuration.yaml`:
 ```yaml
 external_converters:
   - terncy-ws07-d3.mjs
+  - terncy-dim003.mjs
 ```
 
 Restart Zigbee2MQTT.

@@ -16,6 +16,10 @@ curl -L \
     -o /config/zigbee2mqtt/external_converters/terncy-ws07-d3.mjs
 
 curl -L \
+    "$RAW_BASE_URL/zigbee2mqtt/terncy-dim003.mjs" \
+    -o /config/zigbee2mqtt/external_converters/terncy-dim003.mjs
+
+curl -L \
     "$RAW_BASE_URL/homeassistant/blueprints/automation/terncy/ws07_d3_action_events.yaml" \
     -o /config/blueprints/automation/terncy/ws07_d3_action_events.yaml
 
@@ -23,4 +27,5 @@ echo "Installed converter and blueprint."
 echo "Make sure Zigbee2MQTT configuration.yaml contains:"
 echo "external_converters:"
 echo "  - terncy-ws07-d3.mjs"
+echo "  - terncy-dim003.mjs"
 echo "Then restart Zigbee2MQTT."
