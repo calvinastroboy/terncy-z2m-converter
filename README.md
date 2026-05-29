@@ -1,12 +1,15 @@
-# Terncy/Xiaoyan WS07-D3 for Zigbee2MQTT and Home Assistant
+# Terncy/Xiaoyan Zigbee2MQTT and Home Assistant Support
 
-Community support files for the Terncy/Xiaoyan `TERNCY-WS07-D3` 3-gang neutral wall switch.
+Community support files for selected Terncy/Xiaoyan devices.
 
 ## Included Files
 
 ```text
 zigbee2mqtt/terncy-ws07-d3.mjs
-  Zigbee2MQTT external converter.
+  Zigbee2MQTT external converter for the TERNCY-WS07-D3 3-gang neutral wall switch.
+
+zigbee2mqtt/terncy-sp01.mjs
+  Zigbee2MQTT external converter for the TERNCY-SP01 smart plug.
 
 homeassistant/blueprints/automation/terncy/ws07_d3_action_events.yaml
   Main Home Assistant blueprint for 1-7 clicks and long press automation.
@@ -22,6 +25,8 @@ docs/
 ```
 
 ## Supported Features
+
+### TERNCY-WS07-D3
 
 - Three relay outputs via `genOnOff`.
 - Per-gang relay-control/wireless mode.
@@ -40,6 +45,23 @@ docs/
   - `release_l1/l2/l3`
   - `action_duration`
 
+### TERNCY-SP01
+
+- Standard on/off plug control via `genOnOff`.
+- Power and voltage sensors.
+- Computed current sensor.
+
+SP01 exposes `state`, `power`, `voltage`, and `current`. Live testing showed
+the device reports raw `activePower` and `rmsVoltage` values scaled by `/100`.
+The device did not reliably report `rmsCurrent`, so current is calculated from
+`power / voltage`.
+
+The converter avoids active reads of `activePower` and `rmsCurrent` because
+tested firmware can return `0` to those reads and pollute Zigbee2MQTT's cached
+state. Xiaoyan private power calibration commands are intentionally not exposed.
+For manual loading and troubleshooting, see
+[`docs/sp01-zigbee2mqtt-manual-load-guide.md`](docs/sp01-zigbee2mqtt-manual-load-guide.md).
+
 ## Install Zigbee2MQTT External Converter
 
 Replace `<RAW_BASE_URL>` with this repository's GitHub raw URL.
@@ -57,6 +79,9 @@ mkdir -p /config/zigbee2mqtt/external_converters
 curl -L \
   <RAW_BASE_URL>/zigbee2mqtt/terncy-ws07-d3.mjs \
   -o /config/zigbee2mqtt/external_converters/terncy-ws07-d3.mjs
+curl -L \
+  <RAW_BASE_URL>/zigbee2mqtt/terncy-sp01.mjs \
+  -o /config/zigbee2mqtt/external_converters/terncy-sp01.mjs
 ```
 
 Then add this to Zigbee2MQTT `configuration.yaml`:
@@ -64,6 +89,7 @@ Then add this to Zigbee2MQTT `configuration.yaml`:
 ```yaml
 external_converters:
   - terncy-ws07-d3.mjs
+  - terncy-sp01.mjs
 ```
 
 Restart Zigbee2MQTT.
